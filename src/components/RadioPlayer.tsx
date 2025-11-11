@@ -20,8 +20,7 @@ const RadioPlayer = () => {
   });
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Direct stream URL - update this with your actual stream URL from stuvion.com
-  const STREAM_URL = "https://stream.stuvion.com:8000/stream";
+  const STREAM_URL = "https://ls111.systemweb-server.eu:8040/128kbps.mp3";
 
   useEffect(() => {
     if (audioRef.current) {
