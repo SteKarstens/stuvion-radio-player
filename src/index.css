@@ -8,38 +8,39 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 240 10% 8%;
+    --background: 0 0% 7%;
     --foreground: 0 0% 98%;
 
-    --card: 240 8% 12%;
+    --card: 0 0% 10%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 8% 12%;
+    --popover: 0 0% 10%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 280 80% 55%;
+    --primary: 141 73% 42%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 6% 20%;
+    --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 240 6% 18%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 280 80% 55%;
+    --accent: 141 73% 42%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 6% 20%;
-    --input: 240 6% 20%;
-    --ring: 280 80% 55%;
+    --border: 0 0% 20%;
+    --input: 0 0% 18%;
+    --ring: 141 73% 42%;
 
-    --radius: 1rem;
+    --radius: 0.5rem;
 
-    --player-glow: 280 80% 55%;
-    --player-bg: 240 8% 14%;
+    --spotify-green: 141 73% 42%;
+    --player-glow: 141 73% 42%;
+    --player-bg: 0 0% 12%;
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }

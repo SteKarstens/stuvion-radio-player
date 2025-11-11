@@ -51,6 +51,9 @@ export default {
           glow: "hsl(var(--player-glow))",
           bg: "hsl(var(--player-bg))",
         },
+        spotify: {
+          green: "hsl(var(--spotify-green))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

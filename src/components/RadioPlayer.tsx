@@ -20,7 +20,8 @@ const RadioPlayer = () => {
   });
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const STREAM_URL = "https://www.stuvion.com/listen.m3u";
+  // Direct stream URL - update this with your actual stream URL from stuvion.com
+  const STREAM_URL = "https://stream.stuvion.com:8000/stream";
 
   useEffect(() => {
     if (audioRef.current) {
@@ -52,17 +53,23 @@ const RadioPlayer = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (!audioRef.current) return;
 
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(false);
     } else {
-      audioRef.current.play().catch(error => {
+      try {
+        // Load and play the stream
+        audioRef.current.load();
+        await audioRef.current.play();
+        setIsPlaying(true);
+      } catch (error) {
         console.error("Error playing audio:", error);
-      });
+        alert("Stream konnte nicht geladen werden. Bitte überprüfen Sie die Stream-URL in der RadioPlayer.tsx Datei.");
+      }
     }
-    setIsPlaying(!isPlaying);
   };
 
   return (
@@ -89,12 +96,12 @@ const RadioPlayer = () => {
           <Button
             size="lg"
             onClick={togglePlay}
-            className="w-20 h-20 rounded-full bg-primary hover:bg-primary/90 shadow-lg hover:shadow-player-glow/50 transition-all"
+            className="w-20 h-20 rounded-full bg-spotify-green hover:bg-spotify-green/90 shadow-lg hover:shadow-spotify-green/50 transition-all"
           >
             {isPlaying ? (
-              <Pause className="w-8 h-8" />
+              <Pause className="w-8 h-8 text-black" />
             ) : (
-              <Play className="w-8 h-8 ml-1" />
+              <Play className="w-8 h-8 ml-1 text-black" />
             )}
           </Button>
         </div>
@@ -112,7 +119,14 @@ const RadioPlayer = () => {
         </div>
 
         {/* Hidden Audio Element */}
-        <audio ref={audioRef} src={STREAM_URL} preload="none" />
+        <audio 
+          ref={audioRef} 
+          preload="none"
+          crossOrigin="anonymous"
+        >
+          <source src={STREAM_URL} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
       </div>
     </Card>
   );
