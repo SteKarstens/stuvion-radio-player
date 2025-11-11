@@ -29,25 +29,35 @@ const RadioPlayer = () => {
   }, [volume]);
 
   useEffect(() => {
-    // Simulate fetching now playing info
-    // In production, you'd fetch from stuVion API and then iTunes API
     const fetchNowPlaying = async () => {
       try {
-        // This is a placeholder - you'll need to implement actual API calls
-        // Example: fetch from your radio's metadata endpoint
-        const mockData: NowPlaying = {
-          title: "stuVion Radio",
-          artist: "Live Stream",
-          coverUrl: "/placeholder.svg",
-        };
-        setNowPlaying(mockData);
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/now-playing`,
+          {
+            headers: {
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch now playing data");
+        }
+
+        const data = await response.json();
+        setNowPlaying({
+          title: data.title,
+          artist: data.artist,
+          coverUrl: data.coverUrl,
+        });
       } catch (error) {
         console.error("Error fetching now playing:", error);
+        // Keep showing last known data on error
       }
     };
 
     fetchNowPlaying();
-    const interval = setInterval(fetchNowPlaying, 30000); // Update every 30 seconds
+    const interval = setInterval(fetchNowPlaying, 10000); // Update every 10 seconds
 
     return () => clearInterval(interval);
   }, []);
