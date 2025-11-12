@@ -5,6 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import AudioVisualizer from "./AudioVisualizer";
 
 interface NowPlaying {
   title: string;
@@ -157,6 +158,11 @@ const RadioPlayer = () => {
             <Share2 className="w-4 h-4" />
             Song teilen
           </Button>
+        </div>
+
+        {/* Audio Visualizer */}
+        <div className="w-full max-w-2xl">
+          <AudioVisualizer audioElement={audioRef.current} isPlaying={isPlaying} />
         </div>
 
         {/* Player Controls */}
