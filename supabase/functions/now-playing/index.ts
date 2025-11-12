@@ -37,17 +37,24 @@ serve(async (req) => {
       console.log('AzuraCast response status:', azuraResponse.status);
       
       if (azuraResponse.ok) {
-        const azuraData = await azuraResponse.json();
-        console.log('AzuraCast data received, keys:', Object.keys(azuraData).join(', '));
-        
-        const nowPlaying = azuraData.now_playing || azuraData || {};
-        const song = nowPlaying.song || {};
-        
-        if (song.title || song.text) {
-          title = song.title || song.text;
-          artist = song.artist || 'Live Stream';
-          metadataSource = 'azuracast';
-          console.log('Successfully parsed from AzuraCast:', { title, artist });
+        try {
+          const azuraData = await azuraResponse.json();
+          console.log('AzuraCast raw data:', JSON.stringify(azuraData));
+          
+          // Try multiple possible response structures
+          const nowPlaying = azuraData.now_playing || azuraData;
+          const song = nowPlaying?.song || nowPlaying;
+          
+          if (song?.title || song?.text) {
+            title = song.title || song.text || 'stuVion Radio';
+            artist = song.artist || 'Live Stream';
+            metadataSource = 'azuracast';
+            console.log('Successfully parsed from AzuraCast:', { title, artist });
+          } else {
+            console.log('No valid song data in AzuraCast response');
+          }
+        } catch (parseError) {
+          console.error('Failed to parse AzuraCast JSON:', parseError);
         }
       }
     } catch (azuraError) {
