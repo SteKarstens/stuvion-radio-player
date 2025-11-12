@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Play, Pause, Volume2 } from "lucide-react";
+import { Play, Pause, Volume2, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface NowPlaying {
   title: string;
@@ -20,6 +21,7 @@ const RadioPlayer = () => {
     coverUrl: "",
   });
   const audioRef = useRef<HTMLAudioElement>(null);
+  const { toast } = useToast();
 
   const STREAM_URL = "https://ls111.systemweb-server.eu:8040/128kbps.mp3";
 
@@ -76,6 +78,47 @@ const RadioPlayer = () => {
     }
   };
 
+  const handleShare = async () => {
+    const shareText = `Höre gerade "${nowPlaying.title}" von ${nowPlaying.artist} auf stuVion Radio! 🎵`;
+    const shareUrl = window.location.href;
+
+    // Check if Web Share API is available (mobile devices)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "stuVion Radio - Now Playing",
+          text: shareText,
+          url: shareUrl,
+        });
+        toast({
+          title: "Geteilt!",
+          description: "Song erfolgreich geteilt",
+        });
+      } catch (error) {
+        // User cancelled share or error occurred
+        if ((error as Error).name !== "AbortError") {
+          console.error("Error sharing:", error);
+        }
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
+        toast({
+          title: "In Zwischenablage kopiert!",
+          description: "Song-Info wurde kopiert",
+        });
+      } catch (error) {
+        console.error("Error copying to clipboard:", error);
+        toast({
+          title: "Fehler",
+          description: "Kopieren fehlgeschlagen",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
   return (
     <Card className="bg-player-card/80 backdrop-blur-xl border-border/50 p-8 sm:p-10 shadow-2xl relative overflow-hidden">
       {/* Gradient Overlay */}
@@ -103,6 +146,17 @@ const RadioPlayer = () => {
         <div className="text-center space-y-3 max-w-md">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground leading-tight line-clamp-2">{nowPlaying.title}</h2>
           <p className="text-muted-foreground text-xl font-medium line-clamp-1">{nowPlaying.artist}</p>
+          
+          {/* Share Button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleShare}
+            className="gap-2 mt-4 bg-secondary/50 hover:bg-secondary/80 border-border/50"
+          >
+            <Share2 className="w-4 h-4" />
+            Song teilen
+          </Button>
         </div>
 
         {/* Player Controls */}
