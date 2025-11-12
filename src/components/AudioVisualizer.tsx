@@ -9,29 +9,60 @@ const AudioVisualizer = ({ audioElement, isPlaying }: AudioVisualizerProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationIdRef = useRef<number>();
   const analyserRef = useRef<AnalyserNode>();
-  const dataArrayRef = useRef<Uint8Array>();
+  const dataArrayRef = useRef<Uint8Array<ArrayBuffer>>();
+  const audioContextRef = useRef<AudioContext>();
+  const sourceRef = useRef<MediaElementAudioSourceNode>();
 
+  // Set up audio context once
   useEffect(() => {
-    if (!audioElement || !canvasRef.current) return;
+    if (!audioElement || audioContextRef.current) return;
 
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      
+      const source = audioContext.createMediaElementSource(audioElement);
+      source.connect(analyser);
+      analyser.connect(audioContext.destination);
+
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength) as Uint8Array<ArrayBuffer>;
+
+      audioContextRef.current = audioContext;
+      sourceRef.current = source;
+      analyserRef.current = analyser;
+      dataArrayRef.current = dataArray;
+    } catch (error) {
+      console.error("Error setting up audio visualizer:", error);
+    }
+
+    return () => {
+      if (sourceRef.current) {
+        sourceRef.current.disconnect();
+      }
+      if (analyserRef.current) {
+        analyserRef.current.disconnect();
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+    };
+  }, [audioElement]);
+
+  // Animation loop
+  useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set up audio context and analyser
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const analyser = audioContext.createAnalyser();
-    analyser.fftSize = 256;
-    
-    const source = audioContext.createMediaElementSource(audioElement);
-    source.connect(analyser);
-    analyser.connect(audioContext.destination);
+    const analyser = analyserRef.current;
+    const dataArray = dataArrayRef.current;
+    if (!analyser || !dataArray) return;
 
     const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    analyserRef.current = analyser;
-    dataArrayRef.current = dataArray;
 
     // Set canvas size
     const setCanvasSize = () => {
@@ -86,11 +117,8 @@ const AudioVisualizer = ({ audioElement, isPlaying }: AudioVisualizerProps) => {
       if (animationIdRef.current) {
         cancelAnimationFrame(animationIdRef.current);
       }
-      source.disconnect();
-      analyser.disconnect();
-      audioContext.close();
     };
-  }, [audioElement, isPlaying]);
+  }, [isPlaying]);
 
   return (
     <canvas
