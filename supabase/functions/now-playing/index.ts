@@ -13,45 +13,98 @@ serve(async (req) => {
   console.log('Now-playing function called');
 
   try {
-    // Fetch AzuraCast now playing data with timeout
-    console.log('Fetching from AzuraCast API...');
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+    let title = 'stuVion Radio';
+    let artist = 'Live Stream';
     
-    const azuracastResponse = await fetch('https://ls111.systemweb-server.eu:8040/api/nowplaying/1', {
-      headers: {
-        'Accept': 'application/json',
-      },
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    console.log('AzuraCast response status:', azuracastResponse.status);
-
-    if (!azuracastResponse.ok) {
-      throw new Error(`AzuraCast API error: ${azuracastResponse.status}`);
-    }
-
-    let azuracastData;
+    // Try Shoutcast/Icecast stats endpoint first
+    console.log('Trying Shoutcast stats endpoint...');
     try {
-      azuracastData = await azuracastResponse.json();
-      console.log('AzuraCast JSON parsed successfully');
-    } catch (jsonError) {
-      console.error('Failed to parse AzuraCast JSON:', jsonError);
-      throw new Error('Failed to parse AzuraCast response');
+      const statsController = new AbortController();
+      const statsTimeoutId = setTimeout(() => statsController.abort(), 5000);
+      
+      const statsResponse = await fetch('https://ls111.systemweb-server.eu:8040/stats', {
+        headers: {
+          'Accept': 'application/json',
+        },
+        signal: statsController.signal,
+      });
+      clearTimeout(statsTimeoutId);
+      
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        console.log('Shoutcast stats response:', statsData);
+        
+        // Parse Shoutcast/Icecast stats format
+        if (statsData.icestats?.source?.title) {
+          const fullTitle = statsData.icestats.source.title;
+          const parts = fullTitle.split(' - ');
+          if (parts.length >= 2) {
+            artist = parts[0].trim();
+            title = parts.slice(1).join(' - ').trim();
+          } else {
+            title = fullTitle;
+          }
+          console.log('Parsed from Shoutcast stats:', { title, artist });
+        }
+      }
+    } catch (statsError) {
+      console.log('Shoutcast stats failed, trying status-json.xsl...');
+      
+      // Try alternative Icecast endpoint
+      try {
+        const jsonController = new AbortController();
+        const jsonTimeoutId = setTimeout(() => jsonController.abort(), 5000);
+        
+        const jsonResponse = await fetch('https://ls111.systemweb-server.eu:8040/status-json.xsl', {
+          signal: jsonController.signal,
+        });
+        clearTimeout(jsonTimeoutId);
+        
+        if (jsonResponse.ok) {
+          const jsonData = await jsonResponse.json();
+          console.log('status-json.xsl response:', jsonData);
+          
+          if (jsonData.icestats?.source?.title) {
+            const fullTitle = jsonData.icestats.source.title;
+            const parts = fullTitle.split(' - ');
+            if (parts.length >= 2) {
+              artist = parts[0].trim();
+              title = parts.slice(1).join(' - ').trim();
+            } else {
+              title = fullTitle;
+            }
+            console.log('Parsed from status-json:', { title, artist });
+          }
+        }
+      } catch (jsonError) {
+        console.log('status-json.xsl also failed, trying AzuraCast API...');
+        
+        // Fall back to AzuraCast API
+        try {
+          const azuraController = new AbortController();
+          const azuraTimeoutId = setTimeout(() => azuraController.abort(), 5000);
+          
+          const azuraResponse = await fetch('https://ls111.systemweb-server.eu:8040/api/nowplaying/1', {
+            headers: { 'Accept': 'application/json' },
+            signal: azuraController.signal,
+          });
+          clearTimeout(azuraTimeoutId);
+          
+          if (azuraResponse.ok) {
+            const azuraData = await azuraResponse.json();
+            const nowPlaying = azuraData.now_playing || azuraData || {};
+            const song = nowPlaying.song || {};
+            title = song.title || song.text || 'stuVion Radio';
+            artist = song.artist || 'Live Stream';
+            console.log('Parsed from AzuraCast:', { title, artist });
+          }
+        } catch (azuraError) {
+          console.error('All metadata sources failed:', azuraError);
+        }
+      }
     }
     
-    console.log('Data keys:', Object.keys(azuracastData).join(', '));
-    
-    // AzuraCast returns the now_playing data directly at the root
-    const nowPlaying = azuracastData.now_playing || azuracastData || {};
-    const song = nowPlaying.song || {};
-    const title = song.title || song.text || 'stuVion Radio';
-    const artist = song.artist || 'Live Stream';
-    
-    console.log('Parsed song data:', { title, artist });
-    
-    console.log('Song info:', { title, artist });
+    console.log('Final song info:', { title, artist });
     
     // Search iTunes API for cover art
     let coverUrl = '/placeholder.svg';
@@ -91,7 +144,6 @@ serve(async (req) => {
         title,
         artist,
         coverUrl,
-        live: nowPlaying.live || {},
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
