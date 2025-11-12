@@ -3,6 +3,7 @@ import { Play, Pause, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Card } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
 interface NowPlaying {
   title: string;
@@ -31,25 +32,19 @@ const RadioPlayer = () => {
   useEffect(() => {
     const fetchNowPlaying = async () => {
       try {
-        const response = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/now-playing`,
-          {
-            headers: {
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            },
-          }
-        );
+        const { data, error } = await supabase.functions.invoke('now-playing');
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch now playing data");
+        if (error) {
+          throw error;
         }
 
-        const data = await response.json();
-        setNowPlaying({
-          title: data.title,
-          artist: data.artist,
-          coverUrl: data.coverUrl,
-        });
+        if (data) {
+          setNowPlaying({
+            title: data.title,
+            artist: data.artist,
+            coverUrl: data.coverUrl,
+          });
+        }
       } catch (error) {
         console.error("Error fetching now playing:", error);
         // Keep showing last known data on error
