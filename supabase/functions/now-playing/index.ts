@@ -20,76 +20,134 @@ serve(async (req) => {
     
     console.log('Starting metadata fetch...');
     
-    // Try AzuraCast API directly
+    // Try Shoutcast current song endpoint first
     try {
-      console.log('Fetching from AzuraCast API...');
-      const azuraController = new AbortController();
-      const azuraTimeoutId = setTimeout(() => azuraController.abort(), 8000);
+      console.log('Fetching from Shoutcast currentsong...');
+      const shoutcastController = new AbortController();
+      const shoutcastTimeoutId = setTimeout(() => shoutcastController.abort(), 5000);
       
-      const azuraResponse = await fetch('https://ls111.systemweb-server.eu:8040/api/nowplaying/1', {
+      const shoutcastResponse = await fetch('https://ls111.systemweb-server.eu:8040/currentsong?sid=1', {
         headers: { 
-          'Accept': 'application/json',
           'User-Agent': 'stuVion-Radio/1.0'
         },
-        signal: azuraController.signal,
+        signal: shoutcastController.signal,
       });
-      clearTimeout(azuraTimeoutId);
+      clearTimeout(shoutcastTimeoutId);
       
-      console.log('AzuraCast response status:', azuraResponse.status);
+      console.log('Shoutcast currentsong response status:', shoutcastResponse.status);
       
-      if (azuraResponse.ok) {
-        try {
-          const azuraData = await azuraResponse.json();
-          console.log('AzuraCast data structure check:', {
-            hasNowPlaying: !!azuraData.now_playing,
-            hasListeners: !!azuraData.listeners,
-            topLevelKeys: Object.keys(azuraData).join(', ')
-          });
-          
-          // Parse listeners count
-          if (azuraData.listeners && typeof azuraData.listeners.current === 'number') {
-            listeners = azuraData.listeners.current;
-            console.log('Found listeners count:', listeners);
-          } else if (typeof azuraData.listeners === 'number') {
-            listeners = azuraData.listeners;
-            console.log('Found listeners count (direct):', listeners);
-          }
-          
-          // Parse song info - try multiple structures
-          const nowPlaying = azuraData.now_playing || azuraData;
-          
-          if (nowPlaying) {
-            console.log('Now playing structure:', {
-              hasSong: !!nowPlaying.song,
-              songKeys: nowPlaying.song ? Object.keys(nowPlaying.song).join(', ') : 'none'
-            });
-            
-            const song = nowPlaying.song || nowPlaying;
-            
-            // Try different field combinations
-            if (song.title) {
-              title = song.title;
-              artist = song.artist || 'Live Stream';
-              metadataSource = 'azuracast';
-              console.log('Successfully parsed (title field):', { title, artist });
-            } else if (song.text) {
-              title = song.text;
-              artist = song.artist || 'Live Stream';
-              metadataSource = 'azuracast';
-              console.log('Successfully parsed (text field):', { title, artist });
-            } else {
-              console.log('No valid song data found. Song object:', JSON.stringify(song).substring(0, 200));
-            }
+      if (shoutcastResponse.ok) {
+        const songText = await shoutcastResponse.text();
+        console.log('Shoutcast currentsong data:', songText);
+        
+        if (songText && songText.trim().length > 0) {
+          // Parse "Artist - Title" format
+          const parts = songText.split(' - ');
+          if (parts.length >= 2) {
+            artist = parts[0].trim();
+            title = parts.slice(1).join(' - ').trim();
           } else {
-            console.log('No now_playing data found');
+            title = songText.trim();
           }
-        } catch (parseError) {
-          console.error('Failed to parse AzuraCast JSON:', parseError);
+          metadataSource = 'shoutcast_currentsong';
+          console.log('Successfully parsed from Shoutcast currentsong:', { title, artist });
         }
       }
-    } catch (azuraError) {
-      const errorMsg = azuraError instanceof Error ? azuraError.message : 'Unknown error';
-      console.error('AzuraCast API failed:', errorMsg);
+    } catch (shoutcastError) {
+      console.error('Shoutcast currentsong failed:', shoutcastError instanceof Error ? shoutcastError.message : 'Unknown error');
+    }
+    
+    // Try Shoutcast 7.html as fallback
+    if (metadataSource === 'default') {
+      try {
+        console.log('Fetching from Shoutcast 7.html...');
+        const html7Controller = new AbortController();
+        const html7TimeoutId = setTimeout(() => html7Controller.abort(), 5000);
+        
+        const html7Response = await fetch('https://ls111.systemweb-server.eu:8040/7.html?sid=1', {
+          headers: { 
+            'User-Agent': 'stuVion-Radio/1.0'
+          },
+          signal: html7Controller.signal,
+        });
+        clearTimeout(html7TimeoutId);
+        
+        console.log('Shoutcast 7.html response status:', html7Response.status);
+        
+        if (html7Response.ok) {
+          const html7Text = await html7Response.text();
+          console.log('Shoutcast 7.html raw data (first 200 chars):', html7Text.substring(0, 200));
+          
+          // Parse CSV format: listeners,status,peak,max,unique,bitrate,song
+          const values = html7Text.split(',');
+          if (values.length >= 7) {
+            listeners = parseInt(values[0]) || 0;
+            const songText = values.slice(6).join(',').trim();
+            
+            if (songText && songText.length > 0) {
+              // Parse "Artist - Title" format
+              const parts = songText.split(' - ');
+              if (parts.length >= 2) {
+                artist = parts[0].trim();
+                title = parts.slice(1).join(' - ').trim();
+              } else {
+                title = songText.trim();
+              }
+              metadataSource = 'shoutcast_7html';
+              console.log('Successfully parsed from Shoutcast 7.html:', { title, artist, listeners });
+            }
+          }
+        }
+      } catch (html7Error) {
+        console.error('Shoutcast 7.html failed:', html7Error instanceof Error ? html7Error.message : 'Unknown error');
+      }
+    }
+    
+    // Try AzuraCast as last fallback
+    if (metadataSource === 'default') {
+      try {
+        console.log('Fetching from AzuraCast API...');
+        const azuraController = new AbortController();
+        const azuraTimeoutId = setTimeout(() => azuraController.abort(), 5000);
+        
+        const azuraResponse = await fetch('https://ls111.systemweb-server.eu:8040/api/nowplaying/1', {
+          headers: { 
+            'Accept': 'application/json',
+            'User-Agent': 'stuVion-Radio/1.0'
+          },
+          signal: azuraController.signal,
+        });
+        clearTimeout(azuraTimeoutId);
+        
+        console.log('AzuraCast response status:', azuraResponse.status);
+        
+        if (azuraResponse.ok) {
+          try {
+            const azuraData = await azuraResponse.json();
+            console.log('AzuraCast data keys:', Object.keys(azuraData).join(', '));
+            
+            if (azuraData.listeners && typeof azuraData.listeners.current === 'number') {
+              listeners = azuraData.listeners.current;
+            }
+            
+            const nowPlaying = azuraData.now_playing || azuraData;
+            if (nowPlaying) {
+              const song = nowPlaying.song || nowPlaying;
+              
+              if (song.title) {
+                title = song.title;
+                artist = song.artist || 'Live Stream';
+                metadataSource = 'azuracast';
+                console.log('Successfully parsed from AzuraCast:', { title, artist });
+              }
+            }
+          } catch (parseError) {
+            console.error('Failed to parse AzuraCast JSON:', parseError);
+          }
+        }
+      } catch (azuraError) {
+        console.error('AzuraCast API failed:', azuraError instanceof Error ? azuraError.message : 'Unknown error');
+      }
     }
     
     console.log('Final song info from', metadataSource, ':', { title, artist });
