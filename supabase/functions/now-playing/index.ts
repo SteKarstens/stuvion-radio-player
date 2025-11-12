@@ -10,9 +10,9 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  console.log('Now-playing function called');
-
   try {
+    console.log('Now-playing function called');
+
     let title = 'stuVion Radio';
     let artist = 'Live Stream';
     let metadataSource = 'default';
@@ -108,19 +108,19 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('Error in now-playing function:', error);
+    console.error('Fatal error in now-playing function:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Error details:', errorMessage);
     
+    // Always return a valid response
     return new Response(
       JSON.stringify({
-        error: errorMessage,
         title: 'stuVion Radio',
         artist: 'Live Stream',
         coverUrl: '/placeholder.svg',
       }),
       {
-        status: 200, // Return 200 with fallback data instead of error
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
