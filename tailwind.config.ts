@@ -50,9 +50,12 @@ export default {
         player: {
           glow: "hsl(var(--player-glow))",
           bg: "hsl(var(--player-bg))",
+          card: "hsl(var(--player-card))",
         },
-        spotify: {
-          green: "hsl(var(--spotify-green))",
+        radio: {
+          accent: "hsl(var(--radio-accent))",
+          "gradient-start": "hsl(var(--radio-gradient-start))",
+          "gradient-end": "hsl(var(--radio-gradient-end))",
         },
       },
       borderRadius: {
