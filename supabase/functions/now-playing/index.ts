@@ -15,11 +15,12 @@ serve(async (req) => {
 
     let title = 'stuVion Radio';
     let artist = 'Live Stream';
+    let listeners = 0;
     let metadataSource = 'default';
     
     console.log('Starting metadata fetch...');
     
-    // Try AzuraCast API directly (most reliable)
+    // Try AzuraCast API directly
     try {
       console.log('Fetching from AzuraCast API...');
       const azuraController = new AbortController();
@@ -39,19 +40,48 @@ serve(async (req) => {
       if (azuraResponse.ok) {
         try {
           const azuraData = await azuraResponse.json();
-          console.log('AzuraCast raw data:', JSON.stringify(azuraData));
+          console.log('AzuraCast data structure check:', {
+            hasNowPlaying: !!azuraData.now_playing,
+            hasListeners: !!azuraData.listeners,
+            topLevelKeys: Object.keys(azuraData).join(', ')
+          });
           
-          // Try multiple possible response structures
+          // Parse listeners count
+          if (azuraData.listeners && typeof azuraData.listeners.current === 'number') {
+            listeners = azuraData.listeners.current;
+            console.log('Found listeners count:', listeners);
+          } else if (typeof azuraData.listeners === 'number') {
+            listeners = azuraData.listeners;
+            console.log('Found listeners count (direct):', listeners);
+          }
+          
+          // Parse song info - try multiple structures
           const nowPlaying = azuraData.now_playing || azuraData;
-          const song = nowPlaying?.song || nowPlaying;
           
-          if (song?.title || song?.text) {
-            title = song.title || song.text || 'stuVion Radio';
-            artist = song.artist || 'Live Stream';
-            metadataSource = 'azuracast';
-            console.log('Successfully parsed from AzuraCast:', { title, artist });
+          if (nowPlaying) {
+            console.log('Now playing structure:', {
+              hasSong: !!nowPlaying.song,
+              songKeys: nowPlaying.song ? Object.keys(nowPlaying.song).join(', ') : 'none'
+            });
+            
+            const song = nowPlaying.song || nowPlaying;
+            
+            // Try different field combinations
+            if (song.title) {
+              title = song.title;
+              artist = song.artist || 'Live Stream';
+              metadataSource = 'azuracast';
+              console.log('Successfully parsed (title field):', { title, artist });
+            } else if (song.text) {
+              title = song.text;
+              artist = song.artist || 'Live Stream';
+              metadataSource = 'azuracast';
+              console.log('Successfully parsed (text field):', { title, artist });
+            } else {
+              console.log('No valid song data found. Song object:', JSON.stringify(song).substring(0, 200));
+            }
           } else {
-            console.log('No valid song data in AzuraCast response');
+            console.log('No now_playing data found');
           }
         } catch (parseError) {
           console.error('Failed to parse AzuraCast JSON:', parseError);
@@ -96,11 +126,12 @@ serve(async (req) => {
       }
     }
 
-    console.log('Returning response with cover:', coverUrl);
+    console.log('Returning response with:', { title, artist, listeners, coverUrl });
     return new Response(
       JSON.stringify({
         title,
         artist,
+        listeners,
         coverUrl,
       }),
       {
@@ -117,6 +148,7 @@ serve(async (req) => {
       JSON.stringify({
         title: 'stuVion Radio',
         artist: 'Live Stream',
+        listeners: 0,
         coverUrl: '/placeholder.svg',
       }),
       {

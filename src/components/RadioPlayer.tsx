@@ -11,6 +11,7 @@ interface NowPlaying {
   title: string;
   artist: string;
   coverUrl: string;
+  listeners: number;
 }
 
 const RadioPlayer = () => {
@@ -20,6 +21,7 @@ const RadioPlayer = () => {
     title: "stuVion Radio",
     artist: "Loading...",
     coverUrl: "",
+    listeners: 0,
   });
   const audioRef = useRef<HTMLAudioElement>(null);
   const { toast } = useToast();
@@ -46,6 +48,7 @@ const RadioPlayer = () => {
             title: data.title,
             artist: data.artist,
             coverUrl: data.coverUrl,
+            listeners: data.listeners || 0,
           });
         }
       } catch (error) {
@@ -147,6 +150,14 @@ const RadioPlayer = () => {
         <div className="text-center space-y-3 max-w-md">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground leading-tight line-clamp-2">{nowPlaying.title}</h2>
           <p className="text-muted-foreground text-xl font-medium line-clamp-1">{nowPlaying.artist}</p>
+          
+          {/* Listener Count */}
+          {nowPlaying.listeners > 0 && (
+            <div className="flex items-center justify-center gap-2 text-radio-accent font-semibold">
+              <div className="w-2 h-2 bg-radio-accent rounded-full animate-pulse" />
+              <span>{nowPlaying.listeners} Hörer live</span>
+            </div>
+          )}
           
           {/* Share Button */}
           <Button
