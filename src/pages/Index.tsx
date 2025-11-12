@@ -10,7 +10,7 @@ const Index = () => {
           <h1 className="text-5xl sm:text-6xl font-bold text-foreground tracking-tight">
             stuVion
           </h1>
-          <p className="text-muted-foreground text-lg">Your Radio, Your Way</p>
+          <p className="text-muted-foreground text-lg">Radio vision online</p>
         </div>
 
         {/* Radio Player */}
