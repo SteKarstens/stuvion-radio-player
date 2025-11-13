@@ -103,53 +103,6 @@ serve(async (req) => {
       }
     }
     
-    // Try AzuraCast as last fallback
-    if (metadataSource === 'default') {
-      try {
-        console.log('Fetching from AzuraCast API...');
-        const azuraController = new AbortController();
-        const azuraTimeoutId = setTimeout(() => azuraController.abort(), 5000);
-        
-        const azuraResponse = await fetch('https://ls111.systemweb-server.eu:8040/api/nowplaying/1', {
-          headers: { 
-            'Accept': 'application/json',
-            'User-Agent': 'stuVion-Radio/1.0'
-          },
-          signal: azuraController.signal,
-        });
-        clearTimeout(azuraTimeoutId);
-        
-        console.log('AzuraCast response status:', azuraResponse.status);
-        
-        if (azuraResponse.ok) {
-          try {
-            const azuraData = await azuraResponse.json();
-            console.log('AzuraCast data keys:', Object.keys(azuraData).join(', '));
-            
-            if (azuraData.listeners && typeof azuraData.listeners.current === 'number') {
-              listeners = azuraData.listeners.current;
-            }
-            
-            const nowPlaying = azuraData.now_playing || azuraData;
-            if (nowPlaying) {
-              const song = nowPlaying.song || nowPlaying;
-              
-              if (song.title) {
-                title = song.title;
-                artist = song.artist || 'Live Stream';
-                metadataSource = 'azuracast';
-                console.log('Successfully parsed from AzuraCast:', { title, artist });
-              }
-            }
-          } catch (parseError) {
-            console.error('Failed to parse AzuraCast JSON:', parseError);
-          }
-        }
-      } catch (azuraError) {
-        console.error('AzuraCast API failed:', azuraError instanceof Error ? azuraError.message : 'Unknown error');
-      }
-    }
-    
     console.log('Final song info from', metadataSource, ':', { title, artist });
     
     // Search iTunes API for cover art
