@@ -1,9 +1,14 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.81.1';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -134,6 +139,39 @@ serve(async (req) => {
       } catch (itunesError) {
         console.error('iTunes API error:', itunesError);
         // Continue with placeholder if iTunes fails
+      }
+    }
+
+    // Save to song history (only if we have valid song data)
+    if (title !== 'stuVion Radio' && artist !== 'Live Stream') {
+      try {
+        // Check if this song is already the most recent one to avoid duplicates
+        const { data: recentSong } = await supabase
+          .from('song_history')
+          .select('title, artist')
+          .order('played_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        // Only insert if it's a different song
+        if (!recentSong || recentSong.title !== title || recentSong.artist !== artist) {
+          const { error: insertError } = await supabase
+            .from('song_history')
+            .insert({
+              title,
+              artist,
+              cover_url: coverUrl,
+              listeners,
+            });
+
+          if (insertError) {
+            console.error('Error saving song to history:', insertError);
+          } else {
+            console.log('Song saved to history:', { title, artist });
+          }
+        }
+      } catch (historyError) {
+        console.error('Error checking/saving song history:', historyError);
       }
     }
 
