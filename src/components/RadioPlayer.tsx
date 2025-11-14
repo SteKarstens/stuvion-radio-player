@@ -166,15 +166,17 @@ const RadioPlayer = () => {
           <p className="text-muted-foreground text-xl font-medium line-clamp-1">{nowPlaying.artist}</p>
           
           {/* Share Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleShare}
-            className="gap-2 mt-4 bg-secondary/50 hover:bg-secondary/80 border-border/50"
-          >
-            <Share2 className="w-4 h-4" />
-            Song teilen
-          </Button>
+          <div className="flex justify-center mt-4">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={handleShare}
+              className="gap-2 bg-secondary/50 hover:bg-secondary/80 border-border/50 px-8 py-6 cursor-pointer"
+            >
+              <Share2 className="w-5 h-5" />
+              Song teilen
+            </Button>
+          </div>
         </div>
 
         {/* Player Controls */}
