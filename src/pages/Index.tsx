@@ -18,7 +18,7 @@ const Index = () => {
       
       <div className="w-full max-w-4xl mx-auto relative z-10 flex flex-col min-h-[calc(100vh-2rem)]">
         {/* Logo - Header Style */}
-        <div className="text-center pt-1 pb-2">
+        <div className="text-center pt-1 pb-0">
           <div className="flex justify-center">
             <img 
               src={logo} 
@@ -29,7 +29,7 @@ const Index = () => {
         </div>
 
         {/* Radio Player */}
-        <div className="flex-1 flex items-center justify-center py-4">
+        <div className="flex-1 flex items-center justify-center pt-0 pb-4">
           <RadioPlayer />
         </div>
 

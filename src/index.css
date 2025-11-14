@@ -8,22 +8,22 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 135 40% 96%;
     --foreground: 143 64% 15%;
 
-    --card: 0 0% 100%;
+    --card: 135 30% 98%;
     --card-foreground: 143 64% 15%;
 
-    --popover: 0 0% 100%;
+    --popover: 135 30% 98%;
     --popover-foreground: 143 64% 15%;
 
     --primary: 135 85% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 135 30% 95%;
+    --secondary: 135 35% 92%;
     --secondary-foreground: 143 64% 15%;
 
-    --muted: 135 30% 95%;
+    --muted: 135 35% 92%;
     --muted-foreground: 143 30% 40%;
 
     --accent: 135 85% 45%;
@@ -43,7 +43,7 @@ All colors MUST be HSL.
     --radio-gradient-end: 160 75% 38%;
     --player-glow: 135 85% 45%;
     --player-bg: 135 30% 97%;
-    --player-card: 0 0% 100%;
+    --player-card: 135 30% 99%;
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
