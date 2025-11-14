@@ -1,9 +1,15 @@
 import RadioPlayer from "@/components/RadioPlayer";
 import NavigationLinks from "@/components/NavigationLinks";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden">
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeToggle />
+      </div>
+      
       {/* Animated Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-radio-accent/10 via-transparent to-radio-gradient-end/10 pointer-events-none" />
       <div className="absolute top-20 -left-20 w-96 h-96 bg-radio-accent/20 rounded-full blur-3xl animate-pulse-glow" />
