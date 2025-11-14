@@ -16,7 +16,7 @@ const Index = () => {
       <div className="absolute top-20 -left-20 w-96 h-96 bg-radio-accent/20 rounded-full blur-3xl animate-pulse-glow" />
       <div className="absolute bottom-20 -right-20 w-96 h-96 bg-radio-gradient-end/20 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
       
-      <div className="w-full max-w-4xl space-y-8 relative z-10">
+      <div className="w-full max-w-4xl space-y-4 relative z-10">
         {/* Logo */}
         <div className="text-center">
           <div className="flex justify-center">
