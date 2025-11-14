@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Play, Pause, Share2, Users } from "lucide-react";
+import { Play, Pause, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -164,15 +164,6 @@ const RadioPlayer = () => {
         <div className="text-center space-y-4 max-w-md w-full">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground leading-tight line-clamp-2">{nowPlaying.title}</h2>
           <p className="text-muted-foreground text-xl font-medium line-clamp-1">{nowPlaying.artist}</p>
-          
-          {/* Listener Count - Always visible */}
-          <div className="flex items-center justify-center gap-3 bg-gradient-to-r from-radio-gradient-start/10 to-radio-gradient-end/10 px-6 py-3 rounded-full border border-radio-accent/30">
-            <Users className="w-5 h-5 text-radio-accent" />
-            <span className="text-radio-accent font-bold text-lg">
-              {nowPlaying.listeners} Hörer {isPlaying ? 'live' : ''}
-            </span>
-            {isPlaying && <div className="w-2 h-2 bg-radio-accent rounded-full animate-pulse" />}
-          </div>
           
           {/* Share Button */}
           <Button
