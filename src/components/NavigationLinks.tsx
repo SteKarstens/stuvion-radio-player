@@ -61,7 +61,7 @@ const NavigationLinks = () => {
             variant={link.variant}
             size="lg"
             onClick={(e) => handleLinkClick(link.url, link.inApp, e)}
-            className="h-auto py-4 px-6 justify-start gap-3 hover:scale-105 transition-transform"
+            className="h-auto py-4 px-6 justify-center gap-3 hover:scale-105 transition-transform"
           >
             <Icon className="w-5 h-5" />
             <span className="text-lg">{link.title}</span>
