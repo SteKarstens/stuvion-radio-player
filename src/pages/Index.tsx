@@ -1,6 +1,7 @@
 import RadioPlayer from "@/components/RadioPlayer";
 import NavigationLinks from "@/components/NavigationLinks";
 import ThemeToggle from "@/components/ThemeToggle";
+import logo from "@/assets/logo.png";
 
 const Index = () => {
   return (
@@ -17,7 +18,14 @@ const Index = () => {
       
       <div className="w-full max-w-4xl space-y-8 relative z-10">
         {/* Logo/Header */}
-        <div className="text-center space-y-3">
+        <div className="text-center space-y-4">
+          <div className="flex justify-center">
+            <img 
+              src={logo} 
+              alt="stuVion Radio Logo" 
+              className="w-32 h-32 sm:w-40 sm:h-40 object-contain drop-shadow-2xl"
+            />
+          </div>
           <div className="inline-block">
             <h1 className="text-6xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-radio-gradient-start to-radio-gradient-end tracking-tight drop-shadow-2xl">
               stuVion
