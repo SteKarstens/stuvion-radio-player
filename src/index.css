@@ -8,44 +8,81 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 222 47% 8%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 100%;
+    --foreground: 143 64% 15%;
 
-    --card: 222 47% 13%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 143 64% 15%;
 
-    --popover: 222 47% 13%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 143 64% 15%;
 
-    --primary: 217 91% 60%;
+    --primary: 135 85% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 47% 18%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 135 30% 95%;
+    --secondary-foreground: 143 64% 15%;
 
-    --muted: 222 47% 18%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 135 30% 95%;
+    --muted-foreground: 143 30% 40%;
 
-    --accent: 217 91% 60%;
+    --accent: 135 85% 45%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 222 47% 25%;
-    --input: 222 47% 20%;
-    --ring: 217 91% 60%;
+    --border: 135 30% 85%;
+    --input: 135 30% 90%;
+    --ring: 135 85% 45%;
 
     --radius: 0.75rem;
 
-    --radio-accent: 217 91% 60%;
-    --radio-gradient-start: 217 91% 60%;
-    --radio-gradient-end: 262 83% 58%;
-    --player-glow: 217 91% 60%;
-    --player-bg: 222 47% 11%;
-    --player-card: 222 47% 14%;
+    --radio-accent: 135 85% 45%;
+    --radio-gradient-start: 135 85% 45%;
+    --radio-gradient-end: 160 75% 38%;
+    --player-glow: 135 85% 45%;
+    --player-bg: 135 30% 97%;
+    --player-card: 0 0% 100%;
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 143 50% 8%;
+    --foreground: 0 0% 98%;
+
+    --card: 143 40% 13%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 143 40% 13%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 135 85% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 143 40% 18%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 143 40% 18%;
+    --muted-foreground: 143 20% 65%;
+
+    --accent: 135 85% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 143 40% 25%;
+    --input: 143 40% 20%;
+    --ring: 135 85% 45%;
+
+    --radio-accent: 135 85% 45%;
+    --radio-gradient-start: 135 85% 45%;
+    --radio-gradient-end: 160 75% 38%;
+    --player-glow: 135 85% 45%;
+    --player-bg: 143 40% 11%;
+    --player-card: 143 40% 14%;
   }
 }
 
@@ -59,7 +96,14 @@ All colors MUST be HSL.
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: linear-gradient(135deg, hsl(222 47% 8%) 0%, hsl(222 47% 5%) 100%);
+  }
+
+  body:not(.dark) {
+    background: linear-gradient(135deg, hsl(135 30% 98%) 0%, hsl(135 30% 95%) 100%);
+  }
+
+  .dark body {
+    background: linear-gradient(135deg, hsl(143 50% 8%) 0%, hsl(143 50% 5%) 100%);
   }
 }
 

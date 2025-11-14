@@ -17,22 +17,15 @@ const Index = () => {
       <div className="absolute bottom-20 -right-20 w-96 h-96 bg-radio-gradient-end/20 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
       
       <div className="w-full max-w-4xl space-y-8 relative z-10">
-        {/* Logo/Header */}
-        <div className="text-center space-y-4">
+        {/* Logo */}
+        <div className="text-center">
           <div className="flex justify-center">
             <img 
               src={logo} 
-              alt="stuVion Radio Logo" 
-              className="w-32 h-32 sm:w-40 sm:h-40 object-contain drop-shadow-2xl"
+              alt="stuVion Radio" 
+              className="w-48 h-48 sm:w-56 sm:h-56 object-contain drop-shadow-2xl"
             />
           </div>
-          <div className="inline-block">
-            <h1 className="text-6xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-radio-gradient-start to-radio-gradient-end tracking-tight drop-shadow-2xl">
-              stuVion
-            </h1>
-            <div className="h-1 w-full bg-gradient-to-r from-radio-gradient-start to-radio-gradient-end rounded-full mt-3 shadow-lg shadow-radio-accent/50" />
-          </div>
-          <p className="text-muted-foreground text-xl font-medium tracking-wide">Radio vision online</p>
         </div>
 
         {/* Radio Player */}
