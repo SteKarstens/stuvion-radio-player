@@ -110,15 +110,16 @@ serve(async (req) => {
     
     console.log('Final song info from', metadataSource, ':', { title, artist });
     
-    // Search iTunes API for cover art
+    // Search for cover art (iTunes first, then Spotify as fallback)
     let coverUrl = '/placeholder.svg';
     
     if (title && artist && title !== 'stuVion Radio') {
+      // Try iTunes first
       try {
         console.log('Searching iTunes for cover art...');
         const searchQuery = encodeURIComponent(`${artist} ${title}`);
         const itunesController = new AbortController();
-        const itunesTimeoutId = setTimeout(() => itunesController.abort(), 5000); // 5 second timeout
+        const itunesTimeoutId = setTimeout(() => itunesController.abort(), 5000);
         
         const itunesResponse = await fetch(
           `https://itunes.apple.com/search?term=${searchQuery}&media=music&limit=1`,
@@ -129,16 +130,73 @@ serve(async (req) => {
         if (itunesResponse.ok) {
           const itunesData = await itunesResponse.json();
           if (itunesData.results && itunesData.results.length > 0) {
-            // Get high quality artwork (replace 100x100 with 600x600)
             coverUrl = itunesData.results[0].artworkUrl100?.replace('100x100', '600x600') || '/placeholder.svg';
             console.log('iTunes cover found:', coverUrl);
           } else {
-            console.log('No iTunes results found');
+            console.log('No iTunes results found, trying Spotify...');
           }
         }
       } catch (itunesError) {
         console.error('iTunes API error:', itunesError);
-        // Continue with placeholder if iTunes fails
+      }
+      
+      // Try Spotify as fallback if iTunes didn't find anything
+      if (coverUrl === '/placeholder.svg') {
+        try {
+          const spotifyClientId = Deno.env.get('SPOTIFY_CLIENT_ID');
+          const spotifyClientSecret = Deno.env.get('SPOTIFY_CLIENT_SECRET');
+          
+          if (spotifyClientId && spotifyClientSecret) {
+            console.log('Getting Spotify access token...');
+            
+            // Get Spotify access token
+            const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + btoa(`${spotifyClientId}:${spotifyClientSecret}`)
+              },
+              body: 'grant_type=client_credentials'
+            });
+            
+            if (tokenResponse.ok) {
+              const tokenData = await tokenResponse.json();
+              const accessToken = tokenData.access_token;
+              
+              console.log('Searching Spotify for cover art...');
+              const spotifyQuery = encodeURIComponent(`track:${title} artist:${artist}`);
+              const spotifyController = new AbortController();
+              const spotifyTimeoutId = setTimeout(() => spotifyController.abort(), 5000);
+              
+              const spotifyResponse = await fetch(
+                `https://api.spotify.com/v1/search?q=${spotifyQuery}&type=track&limit=1`,
+                { 
+                  headers: { 'Authorization': `Bearer ${accessToken}` },
+                  signal: spotifyController.signal 
+                }
+              );
+              clearTimeout(spotifyTimeoutId);
+              
+              if (spotifyResponse.ok) {
+                const spotifyData = await spotifyResponse.json();
+                if (spotifyData.tracks?.items?.length > 0) {
+                  const images = spotifyData.tracks.items[0].album.images;
+                  // Get the highest quality image (first in array)
+                  if (images && images.length > 0) {
+                    coverUrl = images[0].url;
+                    console.log('Spotify cover found:', coverUrl);
+                  }
+                } else {
+                  console.log('No Spotify results found');
+                }
+              }
+            }
+          } else {
+            console.log('Spotify credentials not configured, skipping Spotify search');
+          }
+        } catch (spotifyError) {
+          console.error('Spotify API error:', spotifyError);
+        }
       }
     }
 

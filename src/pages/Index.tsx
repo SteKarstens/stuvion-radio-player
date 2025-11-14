@@ -5,7 +5,7 @@ import logo from "@/assets/logo.png";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col p-4 sm:p-8 relative overflow-hidden">
       {/* Theme Toggle */}
       <div className="absolute top-4 right-4 z-20">
         <ThemeToggle />
@@ -16,26 +16,30 @@ const Index = () => {
       <div className="absolute top-20 -left-20 w-96 h-96 bg-radio-accent/20 rounded-full blur-3xl animate-pulse-glow" />
       <div className="absolute bottom-20 -right-20 w-96 h-96 bg-radio-gradient-end/20 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
       
-      <div className="w-full max-w-4xl relative z-10 space-y-2">
-        {/* Logo */}
-        <div className="text-center -mb-4">
+      <div className="w-full max-w-4xl mx-auto relative z-10 flex flex-col min-h-[calc(100vh-4rem)]">
+        {/* Logo - Header Style */}
+        <div className="text-center pt-4 pb-6">
           <div className="flex justify-center">
             <img 
               src={logo} 
               alt="stuVion Radio" 
-              className="w-56 h-56 sm:w-72 sm:h-72 object-contain drop-shadow-2xl"
+              className="w-80 h-80 sm:w-96 sm:h-96 object-contain drop-shadow-2xl"
             />
           </div>
         </div>
 
         {/* Radio Player */}
-        <RadioPlayer />
+        <div className="flex-1 flex items-center justify-center">
+          <RadioPlayer />
+        </div>
 
         {/* Navigation Links */}
-        <NavigationLinks />
+        <div className="pb-4">
+          <NavigationLinks />
+        </div>
 
         {/* Footer */}
-        <div className="text-center text-muted-foreground/70 text-sm pt-8">
+        <div className="text-center text-muted-foreground/70 text-sm pb-4">
           <p className="font-medium">© 2025 stuVion Radio. All rights reserved.</p>
         </div>
       </div>
