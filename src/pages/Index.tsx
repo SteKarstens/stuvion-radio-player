@@ -18,7 +18,7 @@ const Index = () => {
       
       <div className="w-full max-w-4xl mx-auto relative z-10 flex flex-col min-h-[calc(100vh-2rem)]">
         {/* Logo - Header Style */}
-        <div className="text-center pt-2 pb-2">
+        <div className="text-center pt-2.5 pb-2.5">
           <div className="flex justify-center">
             <img 
               src={logo} 
@@ -29,17 +29,17 @@ const Index = () => {
         </div>
 
         {/* Radio Player */}
-        <div className="flex-1 flex items-center justify-center py-4">
+        <div className="flex-1 flex items-center justify-center">
           <RadioPlayer />
         </div>
 
         {/* Navigation Links */}
-        <div className="pb-2">
+        <div className="pb-2.5">
           <NavigationLinks />
         </div>
 
         {/* Footer */}
-        <div className="text-center text-muted-foreground/70 text-sm pb-2">
+        <div className="text-center text-muted-foreground/70 text-sm pb-2.5">
           <p className="font-medium">© 2025 stuVion Radio. All rights reserved.</p>
         </div>
       </div>
