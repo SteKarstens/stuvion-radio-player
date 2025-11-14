@@ -16,9 +16,9 @@ const Index = () => {
       <div className="absolute top-20 -left-20 w-96 h-96 bg-radio-accent/20 rounded-full blur-3xl animate-pulse-glow" />
       <div className="absolute bottom-20 -right-20 w-96 h-96 bg-radio-gradient-end/20 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
       
-      <div className="w-full max-w-4xl mx-auto relative z-10 flex flex-col min-h-[calc(100vh-4rem)]">
+      <div className="w-full max-w-4xl mx-auto relative z-10 flex flex-col min-h-[calc(100vh-2rem)]">
         {/* Logo - Header Style */}
-        <div className="text-center pt-4 pb-6">
+        <div className="text-center pt-2 pb-2">
           <div className="flex justify-center">
             <img 
               src={logo} 
@@ -29,17 +29,17 @@ const Index = () => {
         </div>
 
         {/* Radio Player */}
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center py-4">
           <RadioPlayer />
         </div>
 
         {/* Navigation Links */}
-        <div className="pb-4">
+        <div className="pb-2">
           <NavigationLinks />
         </div>
 
         {/* Footer */}
-        <div className="text-center text-muted-foreground/70 text-sm pb-4">
+        <div className="text-center text-muted-foreground/70 text-sm pb-2">
           <p className="font-medium">© 2025 stuVion Radio. All rights reserved.</p>
         </div>
       </div>
