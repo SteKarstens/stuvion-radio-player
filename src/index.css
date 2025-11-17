@@ -98,9 +98,9 @@ All colors MUST be HSL.
     -moz-osx-font-smoothing: grayscale;
   }
 
-  body:not(.dark) {
-    background: linear-gradient(135deg, hsl(135 30% 98%) 0%, hsl(135 30% 95%) 100%);
-  }
+body:not(.dark) {
+  background: linear-gradient(135deg, hsl(135 30% 90%) 0%, hsl(135 30% 85%) 100%);
+}
 
   .dark body {
     background: linear-gradient(135deg, hsl(143 50% 8%) 0%, hsl(143 50% 5%) 100%);
