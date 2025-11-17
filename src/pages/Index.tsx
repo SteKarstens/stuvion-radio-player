@@ -23,7 +23,7 @@ const Index = () => {
             <img 
               src={logo} 
               alt="stuVion Radio" 
-              className="w-80 h-80 sm:w-96 sm:h-96 object-contain drop-shadow-2xl"
+              className="w-80 h-40 sm:w-96 sm:h-46 object-contain drop-shadow-2xl"
             />
           </div>
         </div>
