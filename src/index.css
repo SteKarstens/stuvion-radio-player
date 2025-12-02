@@ -8,42 +8,42 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 135 40% 96%;
-    --foreground: 143 64% 15%;
+    --background: 135 30% 25%;
+    --foreground: 0 0% 95%;
 
-    --card: 135 30% 98%;
-    --card-foreground: 143 64% 15%;
+    --card: 135 30% 20%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 135 30% 98%;
-    --popover-foreground: 143 64% 15%;
+    --popover: 135 30% 20%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 135 85% 45%;
+    --primary: 135 85% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 135 35% 92%;
-    --secondary-foreground: 143 64% 15%;
+    --secondary: 135 30% 30%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 135 35% 92%;
-    --muted-foreground: 143 30% 40%;
+    --muted: 135 30% 30%;
+    --muted-foreground: 135 20% 70%;
 
-    --accent: 135 85% 45%;
+    --accent: 135 85% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 135 30% 85%;
-    --input: 135 30% 90%;
-    --ring: 135 85% 45%;
+    --border: 135 30% 35%;
+    --input: 135 30% 30%;
+    --ring: 135 85% 50%;
 
     --radius: 0.75rem;
 
-    --radio-accent: 135 85% 45%;
-    --radio-gradient-start: 135 85% 45%;
-    --radio-gradient-end: 160 75% 38%;
-    --player-glow: 135 85% 45%;
-    --player-bg: 135 30% 97%;
-    --player-card: 135 30% 99%;
+    --radio-accent: 135 85% 50%;
+    --radio-gradient-start: 135 85% 50%;
+    --radio-gradient-end: 160 75% 42%;
+    --player-glow: 135 85% 50%;
+    --player-bg: 135 30% 95%;
+    --player-card: 135 30% 98%;
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -99,7 +99,7 @@ All colors MUST be HSL.
   }
 
 body:not(.dark) {
-  background: linear-gradient(135deg, hsl(135 30% 8%) 0%, hsl(135 30% 35%) 100%);
+  background: linear-gradient(135deg, hsl(135 30% 18%) 0%, hsl(135 30% 28%) 100%);
 }
 
   .dark body {
