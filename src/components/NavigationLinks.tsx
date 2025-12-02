@@ -52,7 +52,7 @@ const NavigationLinks = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
+    <div className="flex flex-col gap-3 w-full max-w-md mx-auto">
       {links.map((link) => {
         const Icon = link.icon;
         return (
