@@ -162,8 +162,8 @@ const RadioPlayer = () => {
 
         {/* Now Playing Info */}
         <div className="text-center space-y-4 max-w-md w-full">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground leading-tight line-clamp-2">{nowPlaying.title}</h2>
-          <p className="text-muted-foreground text-xl font-medium line-clamp-1">{nowPlaying.artist}</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-player-text leading-tight line-clamp-2">{nowPlaying.title}</h2>
+          <p className="text-player-text-muted text-xl font-medium line-clamp-1">{nowPlaying.artist}</p>
           
           {/* Share Button */}
           <div className="flex justify-center mt-4">

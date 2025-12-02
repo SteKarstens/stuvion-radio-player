@@ -44,6 +44,8 @@ All colors MUST be HSL.
     --player-glow: 135 85% 50%;
     --player-bg: 135 30% 95%;
     --player-card: 135 30% 98%;
+    --player-text: 143 64% 15%;
+    --player-text-muted: 143 30% 40%;
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -83,6 +85,8 @@ All colors MUST be HSL.
     --player-glow: 135 85% 45%;
     --player-bg: 143 40% 11%;
     --player-card: 143 40% 14%;
+    --player-text: 0 0% 98%;
+    --player-text-muted: 143 20% 65%;
   }
 }
 

@@ -51,6 +51,8 @@ export default {
           glow: "hsl(var(--player-glow))",
           bg: "hsl(var(--player-bg))",
           card: "hsl(var(--player-card))",
+          text: "hsl(var(--player-text))",
+          "text-muted": "hsl(var(--player-text-muted))",
         },
         radio: {
           accent: "hsl(var(--radio-accent))",
