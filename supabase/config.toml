@@ -2,3 +2,9 @@ project_id = "xeqwjopfnrbqemwaacet"
 
 [functions.now-playing]
 verify_jwt = false
+
+[functions.fetch-charts]
+verify_jwt = false
+
+[functions.fetch-schedule]
+verify_jwt = false

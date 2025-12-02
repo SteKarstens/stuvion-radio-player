@@ -1,11 +1,13 @@
 import RadioPlayer from "@/components/RadioPlayer";
 import NavigationLinks from "@/components/NavigationLinks";
 import ThemeToggle from "@/components/ThemeToggle";
+import TopCharts from "@/components/TopCharts";
+import TodaySchedule from "@/components/TodaySchedule";
 import logo from "@/assets/logo.png";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background flex flex-col p-4 sm:p-8 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col p-4 sm:p-6 relative overflow-hidden">
       {/* Theme Toggle */}
       <div className="absolute top-4 right-4 z-20">
         <ThemeToggle />
@@ -16,31 +18,35 @@ const Index = () => {
       <div className="absolute top-20 -left-20 w-96 h-96 bg-radio-accent/20 rounded-full blur-3xl animate-pulse-glow" />
       <div className="absolute bottom-20 -right-20 w-96 h-96 bg-radio-gradient-end/20 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
       
-      <div className="w-full max-w-4xl mx-auto relative z-10 flex flex-col min-h-[calc(100vh-2rem)]">
+      <div className="w-full max-w-4xl mx-auto relative z-10 flex flex-col gap-4">
         {/* Logo - Header Style */}
-        <div className="text-center pt-1 pb-0">
+        <div className="text-center pt-1">
           <div className="flex justify-center">
             <img 
               src={logo} 
               alt="stuVion Radio" 
-              className="w-80 h-40 sm:w-96 sm:h-46 object-contain drop-shadow-2xl"
+              className="w-64 h-32 sm:w-80 sm:h-40 object-contain drop-shadow-2xl"
             />
           </div>
         </div>
 
         {/* Radio Player */}
-        <div className="flex-1 flex items-center justify-center pt-0 pb-4">
+        <div className="flex justify-center">
           <RadioPlayer />
         </div>
 
-        {/* Navigation Links */}
-        <div className="pb-2">
-          <NavigationLinks />
+        {/* Charts & Schedule Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <TopCharts />
+          <TodaySchedule />
         </div>
 
-        {/* Footer */}
-        <div className="text-center text-muted-foreground/70 text-sm pb-2">
-          <p className="font-medium">© 2025 stuVion Radio. All rights reserved.</p>
+        {/* Navigation Links & Footer */}
+        <div className="flex flex-col items-center gap-2 pb-2">
+          <NavigationLinks />
+          <p className="text-muted-foreground/50 text-xs">
+            © 2025 stuVion Radio
+          </p>
         </div>
       </div>
     </div>
